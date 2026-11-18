@@ -3,6 +3,16 @@ import type { Route } from "./+types/layout.app";
 import { Sidebar } from "~/components/sidebar";
 import { DevUI } from "~/components/dev-ui";
 import { Toaster } from "sonner";
+import { getKnockFeedConfig } from "~/lib/knock.prototype.server";
+import {
+  VariantA,
+  VariantBNavItem,
+  VariantC,
+} from "~/components/notification-feed.prototype";
+import {
+  PrototypeSwitcher,
+  usePrototypeVariant,
+} from "~/components/prototype-switcher";
 import { getCurrentUserId, getDevCountry } from "~/lib/session";
 import { getCountryTierInfo, COUNTRIES } from "~/lib/ppp";
 import { eq, and, or, sql, desc } from "drizzle-orm";
@@ -213,8 +223,17 @@ export async function loader({ request }: Route.LoaderArgs) {
     countryTierInfo,
     countries: COUNTRIES,
     isTeamAdmin: currentUserId ? isTeamAdmin(currentUserId) : false,
+    // PROTOTYPE (wayfinder #23)
+    knockFeed: getKnockFeedConfig(currentUserId),
   };
 }
+
+// PROTOTYPE (wayfinder #23): Notification Feed variants.
+const FEED_VARIANTS = [
+  { key: "A", name: "Bell popover" },
+  { key: "B", name: "Inbox drawer" },
+  { key: "C", name: "Top bar + toasts" },
+];
 
 export default function AppLayout({ loaderData }: Route.ComponentProps) {
   const {
@@ -225,7 +244,9 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
     countryTierInfo,
     countries,
     isTeamAdmin: userIsTeamAdmin,
+    knockFeed,
   } = loaderData;
+  const variant = usePrototypeVariant(FEED_VARIANTS.map((v) => v.key));
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -233,10 +254,26 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
         currentUser={currentUser}
         recentCourses={recentCourses}
         isTeamAdmin={userIsTeamAdmin}
+        headerSlot={
+          knockFeed &&
+          variant === "A" && <VariantA key={knockFeed.userId} config={knockFeed} />
+        }
+        navSlot={
+          knockFeed &&
+          variant === "B" && (
+            <VariantBNavItem key={knockFeed.userId} config={knockFeed} />
+          )
+        }
       />
       <main className="flex-1 overflow-y-auto">
+        {knockFeed && variant === "C" && (
+          <VariantC key={knockFeed.userId} config={knockFeed} />
+        )}
         <Outlet />
       </main>
+      {knockFeed && (
+        <PrototypeSwitcher variants={FEED_VARIANTS} current={variant} />
+      )}
       <DevUI
         users={users}
         currentUser={currentUser}
