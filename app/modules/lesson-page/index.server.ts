@@ -21,6 +21,7 @@ export { getCommentById, getLessonThread, renderThread } from "./lib/comments";
 export {
   computeResult,
   getBestAttempt,
+  getQuizById,
   getQuizByLessonId,
   getQuizWithQuestions,
 } from "./lib/quiz";
