@@ -1,26 +1,32 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/courses.$slug.lessons.$lessonId";
 import {
-  calculateWatchProgress,
-  computeResult,
   flattenCourseLessons,
-  getBestAttempt,
-  getQuizById,
-  getCommentById,
   getCourseWithDetails,
-  getLastWatchPosition,
   getLessonById,
+  getModuleById,
+  getUserById,
+} from "~/modules/lesson-page/course.server";
+import {
+  calculateWatchProgress,
+  getLastWatchPosition,
   getLessonProgress,
   getLessonProgressForCourse,
-  getLessonThread,
-  getModuleById,
-  getQuizByLessonId,
-  getQuizWithQuestions,
-  getUserById,
   markLessonComplete,
   markLessonInProgress,
+} from "~/modules/lesson-page/progress.server";
+import {
+  getCommentById,
+  getLessonThread,
   renderThread,
-} from "~/modules/lesson-page/index.server";
+} from "~/modules/lesson-page/comments.server";
+import {
+  computeResult,
+  getBestAttempt,
+  getQuizById,
+  getQuizByLessonId,
+  getQuizWithQuestions,
+} from "~/modules/lesson-page/quiz.server";
 import { FullLesson } from "~/components/lesson/full-lesson";
 import { LockedLesson } from "~/components/lesson/locked-lesson";
 import {

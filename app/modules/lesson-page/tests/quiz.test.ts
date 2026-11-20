@@ -11,7 +11,7 @@ vi.mock("~/db", () => ({
   },
 }));
 
-const { getQuizById } = await import("../index.server");
+const { getQuizById } = await import("../quiz.server");
 
 function addLessonWithQuiz(title: string) {
   const mod = testDb
