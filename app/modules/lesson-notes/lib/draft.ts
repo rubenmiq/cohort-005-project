@@ -1,3 +1,5 @@
+import { MAX_NOTE_LENGTH } from "~/lib/notes";
+
 export type SavedNote = { body: string; updatedAt: string } | null;
 
 export type NoteDraftState = {
@@ -8,10 +10,15 @@ export type NoteDraftState = {
   canSave: boolean;
 };
 
-export function describeDraft(
+/**
+ * What the Lesson Note editor shows for the text in the box: its length
+ * against the limit, whether it differs from the saved Note, and whether
+ * Save should be enabled.
+ */
+export function describeNoteDraft(
   draft: string,
   saved: SavedNote,
-  maxLength: number
+  maxLength: number = MAX_NOTE_LENGTH
 ): NoteDraftState {
   const trimmed = draft.trim();
   const length = trimmed.length;
